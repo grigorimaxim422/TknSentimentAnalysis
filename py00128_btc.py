@@ -126,8 +126,9 @@ model_LSTM1.add(Dropout(0.5))
 model_LSTM1.add(BatchNormalization())
 model_LSTM1.add(Dense(1))
 model_LSTM1.summary()
-
-model_LSTM1.compile(optimizer='adam', loss='mean_squared_error', metrics = ('MAPE'))
+print("model_LSTM1.summary()")
+print("---------------------------")
+model_LSTM1.compile(optimizer='adam', loss='mean_squared_error', metrics = ['MAPE'])
 
 history_LSTM1 = model_LSTM1.fit(X_train, y_train,validation_data=(X_valid, y_valid), epochs=10, batch_size=128)
 
@@ -195,7 +196,7 @@ model_GRU.add(Activation('tanh'))
 model_GRU.add(Dropout(0.3))
 model_GRU.add(Dense(1))
 model_GRU.add(Activation('relu'))
-model_GRU.compile(loss='mse', optimizer='adam', metrics = ('MAPE'))
+model_GRU.compile(loss='mse', optimizer='adam', metrics = ['MAPE'])
 model_GRU.summary()
 
 history_GRU = model_GRU.fit(X_train, y_train, validation_data=(X_valid, y_valid), batch_size = 128, epochs = 10)
