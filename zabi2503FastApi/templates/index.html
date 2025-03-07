@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crypto Prediction Hub</title>
+  <meta name="description" content="ML-powered cryptocurrency predictions using advanced models." />
+  
+  <style>
+    /* Global Styles */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0F2027, #203A43, #2C5364);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+    }
+    /* Main container */
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    /* Two-column layout container */
+    .content-wrapper {
+      display: flex;
+      gap: 2rem;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    /* Column styling */
+    .column {
+      flex: 1;
+      min-width: 0; /* Prevents flex items from overflowing */
+    }
+    /* Glassmorphism card style with neon glow */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 32px rgba(0, 218, 174, 0.3), 0 0 20px rgba(106, 226, 248, 0.2);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      height: 100%;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    /* Header styles */
+    .app-header h1 {
+      margin: 0 0 0.5rem;
+      font-size: 2.8rem;
+      text-align: center;
+      line-height: 1.2;
+      background: linear-gradient(45deg, #00F5A0, #00D9F5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(0, 217, 245, 0.3);
+    }
+    .app-header p {
+      text-align: center;
+      margin: 0 0 1.5rem;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      color: #9EEDF9;
+    }
+    /* Form styles */
+    .prediction-form .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .prediction-form .input-group {
+      flex: 1 1 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .prediction-form label {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      color: #9EEDF9;
+    }
+    /* Input styling */
+    .glass-input {
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    .glass-input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.02);
+      box-shadow: 0 0 15px rgba(0, 217, 245, 0.5);
+    }
+    /* Custom select styling */
+    select.glass-input {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='10' viewBox='0 0 14 10'%3E%3Cpolygon points='0,0 14,0 7,10' fill='%23fff'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 12px;
+      cursor: pointer;
+    }
+    select.glass-input option {
+      background: #203A43;
+      color: #fff;
+    }
+    /* Button styles */
+    .predict-button {
+      display: block;
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(45deg, #00F5A0, #00D9F5);
+      color: #0F2027;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .predict-button:hover {
+      transform: scale(1.02);
+      background: linear-gradient(45deg, #00D9F5, #00F5A0);
+      box-shadow: 0 0 20px rgba(0, 217, 245, 0.5);
+    }
+    /* Error message */
+    .error-message {
+      background: rgba(255, 107, 107, 0.15);
+      border-left: 4px solid #FF6B6B;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-radius: 8px;
+    }
+    /* Result card */
+    .result-card {
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      background: rgba(11, 54, 75, 0.4);
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid rgba(0, 217, 245, 0.2);
+      box-shadow: 0 4px 16px rgba(0, 245, 160, 0.2);
+    }
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(0, 245, 160, 0.1) 0%, transparent 70%);
+      z-index: -1;
+      animation: pulse 4s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.4; }
+    }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1rem;
+    }
+    .result-header h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      background: linear-gradient(45deg, #00F5A0, #00D9F5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .crypto-badge {
+      background: linear-gradient(45deg, #00F5A0, #00D9F5);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      color: #0F2027;
+      font-weight: bold;
+      box-shadow: 0 3px 10px rgba(0, 217, 245, 0.3);
+    }
+    .result-content {
+      padding: 0.5rem;
+    }
+    .result-content .result-item {
+      margin-bottom: 1.25rem;
+      font-size: 1.05rem;
+      color: #9EEDF9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .result-content .result-item strong {
+      color: #fff;
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 245, 160, 0.1);
+      border-radius: 8px;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0, 217, 245, 0.1);
+    }
+    .price {
+      color: #00F5A0 !important;
+      font-size: 1.4rem !important;
+      letter-spacing: 1px;
+    }
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .content-wrapper {
+        flex-direction: column;
+      }
+      .column {
+        width: 100%;
+      }
+      .app-header h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="content-wrapper">
+      <!-- Left Column - Form -->
+      <div class="column">
+        <div class="glass-card">
+          <header class="app-header">
+            <h1>₿ Crypto Forecast</h1>
+            <p>ML-powered cryptocurrency predictions</p>
+          </header>
+
+          <form method="post" action="/predict" class="prediction-form">
+            <div class="form-row">
+              <div class="input-group">
+                <label for="model">Prediction Model</label>
+                <select id="model" name="model" class="glass-input">
+                  <option value="linear_regression">Linear Regression</option>
+                  <option value="xgboost">XGBoost</option>
+                  <option value="lightgbm">LightGBM</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label for="crypto">Cryptocurrency</label>
+                <select id="crypto" name="crypto" class="glass-input">
+                  <option value="bitcoin">Bitcoin (BTC)</option>
+                  <option value="ethereum">Ethereum (ETH)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="input-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" class="glass-input" required />
+              </div>
+            </div>
+
+            <button type="submit" class="predict-button">
+              🚀 Generate Prediction
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right Column - Results -->
+      <div class="column">
+        <div class="glass-card">
+          <header class="app-header">
+            <h1>✔️ Results</h1>
+            <p>Your prediction analysis</p>
+          </header>
+
+          {% if error %}
+          <div class="error-message">
+            <p>Error: {{ error }}</p>
+          </div>
+          {% endif %}
+
+          {% if prediction %}
+          <div class="result-card">
+            <div class="result-header">
+              <h3>💡 Prediction Analysis</h3>
+              <div class="crypto-badge">{{ crypto | capitalize }}</div>
+            </div>
+            <div class="result-content">
+              <div class="result-item">
+                <span>Model:</span>
+                <strong>{{ model.replace('_', ' ') | capitalize }}</strong>
+              </div>
+              <div class="result-item">
+                <span>Predicted Price:</span>
+                <strong class="price">{{ prediction | round(2) }}</strong>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
