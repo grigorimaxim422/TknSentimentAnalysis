@@ -12,7 +12,7 @@ dataset = pd.read_csv(url, index_col="date", skiprows=1)
 dataset.head()
 
 ##Data pre-processing
-dataset = dataset.iloc([::-1])
+dataset = dataset.iloc[::-1]
 dataset.head()
 
 df = dataset.reset_index()
