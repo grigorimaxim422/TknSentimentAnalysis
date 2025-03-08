@@ -18,6 +18,7 @@ python-dateutil
 pytz
 requests
 scikit-learn
+seaborn
 scipy
 six
 #sklearn

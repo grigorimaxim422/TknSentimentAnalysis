@@ -185,7 +185,7 @@ print('\nThe error of the model with 1 layer LSTM is:',LSTM1_loss)
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten,Reshape
 from keras.layers import Conv1D, MaxPooling1D, LeakyReLU
-from keras.utils import np_utils
+# from tensorflow.keras.utils import np_utils
 from keras.layers import GRU,CuDNNGRU
 
 ##GRU model
